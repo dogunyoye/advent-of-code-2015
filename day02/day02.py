@@ -25,7 +25,7 @@ def calculate_feet_of_ribbon(data) -> int:
         width = dimensions[1]
         height = dimensions[2]
 
-        ribbon = min((2*length+2*width), (2*width+2*height), (2*length+2*height))
+        ribbon = min((2 * length + 2 * width), (2 * width + 2 * height), (2 * length + 2 * height))
         bow = length * width * height
 
         result += bow + ribbon
