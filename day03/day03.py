@@ -21,23 +21,26 @@ class Position(object):
         return "Coordinate(%d, %d)" % (self.x, self.y)
 
 
-def calculate_houses_visited(data) -> int:
-    current_pos = Position(0, 0)
+def move(direction: str, current_pos: Position, result: set):
+    if direction == '^':
+        result.add(Position(current_pos.x - 1, current_pos.y))
+        current_pos.x -= 1
+    elif direction == '>':
+        result.add(Position(current_pos.x, current_pos.y + 1))
+        current_pos.y += 1
+    elif direction == 'v':
+        result.add(Position(current_pos.x + 1, current_pos.y))
+        current_pos.x += 1
+    else:
+        result.add(Position(current_pos.x, current_pos.y - 1))
+        current_pos.y -= 1
 
+
+def calculate_houses_visited(data) -> int:
+    santa_pos = Position(0, 0)
     result = {Position(0, 0)}
-    for c in data:
-        if c == '^':
-            result.add(Position(current_pos.x - 1, current_pos.y))
-            current_pos.x -= 1
-        elif c == '>':
-            result.add(Position(current_pos.x, current_pos.y + 1))
-            current_pos.y += 1
-        elif c == 'v':
-            result.add(Position(current_pos.x + 1, current_pos.y))
-            current_pos.x += 1
-        else:
-            result.add(Position(current_pos.x, current_pos.y - 1))
-            current_pos.y -= 1
+
+    [move(c, santa_pos, result) for c in data]
     return len(result)
 
 
@@ -53,18 +56,7 @@ def calculate_houses_visited_with_robo_santa(data) -> int:
         else:
             current_pos = robo_santa_pos
 
-        if c == '^':
-            result.add(Position(current_pos.x - 1, current_pos.y))
-            current_pos.x -= 1
-        elif c == '>':
-            result.add(Position(current_pos.x, current_pos.y + 1))
-            current_pos.y += 1
-        elif c == 'v':
-            result.add(Position(current_pos.x + 1, current_pos.y))
-            current_pos.x += 1
-        else:
-            result.add(Position(current_pos.x, current_pos.y - 1))
-            current_pos.y -= 1
+        move(c, current_pos, result)
     return len(result)
 
 
