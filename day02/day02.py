@@ -12,8 +12,11 @@ def calculate_total_square_feet(data) -> int:
         width = dimensions[1]
         height = dimensions[2]
 
-        result += ((2 * length * width) + (2 * width * height) + (2 * height * length)
-                   + min(length * width, width * height, height * length))
+        lw = length * width
+        wh = width * height
+        hl = height * length
+
+        result += ((2 * lw) + (2 * wh) + (2 * hl) + min(lw, wh, hl))
     return result
 
 
