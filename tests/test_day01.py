@@ -3,7 +3,7 @@ import unittest
 from day01 import day01
 
 
-class MyTestCase(unittest.TestCase):
+class Day01Test(unittest.TestCase):
     def test_part_one(self):
         self.assertEqual(day01.which_floor(")())())"), -3)
 
