@@ -18,7 +18,7 @@ class Position(object):
         return hash(self.x) + hash(self.y)
 
     def __repr__(self):
-        return "Coordinate(%d, %d)" % (self.x, self.y)
+        return "Position(%d, %d)" % (self.x, self.y)
 
 
 def move(direction: str, current_pos: Position, result: set):
