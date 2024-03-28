@@ -15,7 +15,7 @@ class Position(object):
         return self.y == other.y and self.x == other.x
 
     def __hash__(self):
-        return hash(self.x) + hash(self.y)
+        return hash((self.x, self.y))
 
     def __repr__(self):
         return "Position(%d, %d)" % (self.x, self.y)
