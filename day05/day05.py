@@ -9,7 +9,7 @@ def __is_nice(data) -> bool:
     twice_in_a_row = False
     disallowed_pairs = {"ab", "cd", "pq", "xy"}
     for i in range(0, len(data) - 1):
-        pair = str(data[i] + data[i+1])
+        pair = str(data[i] + data[i + 1])
         if pair in disallowed_pairs:
             return False
         if pair[0] == pair[1]:
@@ -33,29 +33,28 @@ def __is_nice_new_rules(data) -> bool:
             break
 
     for i in range(0, len(data) - 2):
-        if data[i] == data[i+2]:
+        if data[i] == data[i + 2]:
             repeating_start_and_end_letter = True
             break
 
     return non_overlapping_pair & repeating_start_and_end_letter
 
 
-def find_number_of_nice_strings(data) -> int:
+def __find(data, is_nice_fn) -> int:
     result = 0
     for line in data.splitlines():
-        if __is_nice(line):
+        if is_nice_fn(line):
             result += 1
 
     return result
+
+
+def find_number_of_nice_strings(data) -> int:
+    return __find(data, __is_nice)
 
 
 def find_number_of_nice_strings_with_new_rules(data) -> int:
-    result = 0
-    for line in data.splitlines():
-        if __is_nice_new_rules(line):
-            result += 1
-
-    return result
+    return __find(data, __is_nice_new_rules)
 
 
 def main() -> int:
