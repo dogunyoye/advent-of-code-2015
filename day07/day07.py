@@ -3,16 +3,16 @@ import os.path
 DATA = os.path.join(os.path.dirname(__file__), 'day07.txt')
 
 
-def __traverse_wires(connected, operations, wires, wire) -> int:
-    if wire in wires:
-        return wires[wire]
+def __traverse_wires(connected, operations, signals, wire) -> int:
+    if wire in signals:
+        return signals[wire]
 
     parents = connected[wire]
 
     if parents[0].isnumeric():
         left = int(parents[0])
     else:
-        left = __traverse_wires(connected, operations, wires, parents[0])
+        left = __traverse_wires(connected, operations, signals, parents[0])
 
     if wire not in operations:
         return left
@@ -23,38 +23,33 @@ def __traverse_wires(connected, operations, wires, wire) -> int:
             if parents[1].isnumeric():
                 right = int(parents[1])
             else:
-                right = __traverse_wires(connected, operations, wires, parents[1])
+                right = __traverse_wires(connected, operations, signals, parents[1])
 
             if operations[wire] == "AND":
-                wires[wire] = left & right
+                signals[wire] = left & right
             else:
-                wires[wire] = left | right
+                signals[wire] = left | right
         else:
+            shift = int(parents[1])
             if operations[wire] == "LSHIFT":
-                wires[wire] = left << int(parents[1])
+                signals[wire] = left << shift
             else:
-                wires[wire] = left >> int(parents[1])
+                signals[wire] = left >> shift
     else:
-        value = ~left
-        if value < 0:
-            wires[wire] = pow(2, 16) + value
-        else:
-            wires[wire] = value
+        signals[wire] = pow(2, 16) + ~left
 
-    return wires[wire]
+    return signals[wire]
 
 
 def __build_wires_map(data) -> tuple:
-    wires = {}
-    connected = {}
-    operations = {}
+    signals, connected, operations = {}, {}, {}
 
     for line in data.splitlines():
         parts = line.split(" -> ")
         wire = parts[1]
 
         if parts[0].isnumeric():
-            wires[wire] = int(parts[0])
+            signals[wire] = int(parts[0])
         else:
             input_parts = parts[0].split(" ")
             if len(input_parts) == 3:  # AND, OR, LSHIFT, RSHIFT
@@ -66,19 +61,19 @@ def __build_wires_map(data) -> tuple:
             else:
                 connected[wire] = [parts[0]]
 
-    return wires, connected, operations
+    return signals, connected, operations
 
 
 def find_signal_provided_to_wire_a(data) -> int:
-    wires, connected, operations = __build_wires_map(data)
-    return __traverse_wires(connected, operations, wires, "a")
+    signals, connected, operations = __build_wires_map(data)
+    return __traverse_wires(connected, operations, signals, "a")
 
 
 def find_signal_provided_to_wire_a_after_rewire(data) -> int:
     original_a = find_signal_provided_to_wire_a(data)
-    wires, connected, operations = __build_wires_map(data)
-    wires["b"] = original_a
-    return __traverse_wires(connected, operations, wires, "a")
+    signals, connected, operations = __build_wires_map(data)
+    signals["b"] = original_a
+    return __traverse_wires(connected, operations, signals, "a")
 
 
 def main() -> int:
