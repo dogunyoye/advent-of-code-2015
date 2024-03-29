@@ -19,7 +19,7 @@ def __traverse_wires(connected, operations, signals, wire) -> int:
 
     if len(parents) == 2:
 
-        if (operations[wire] == "AND") | (operations[wire] == "OR"):
+        if (operations[wire] == "AND") or (operations[wire] == "OR"):
             if parents[1].isnumeric():
                 right = int(parents[1])
             else:
