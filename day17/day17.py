@@ -1,5 +1,5 @@
 import os.path
-from itertools import permutations, combinations
+from itertools import combinations
 
 DATA = os.path.join(os.path.dirname(__file__), 'day17.txt')
 
