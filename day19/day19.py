@@ -14,6 +14,14 @@ def __build_replacements_list(data) -> list:
     return replacements
 
 
+def __replace(source, replace_string, idx, length) -> str:
+    template_list = list(source)
+    template_list.insert(idx + length, replace_string)
+    for j in range(idx + length - 1, idx - 1, -1):
+        del template_list[j]
+    return str("".join(template_list))
+
+
 def calculate_number_of_distinct_molecules(data) -> int:
     result = set()
     replacements = __build_replacements_list(data)
@@ -22,16 +30,10 @@ def calculate_number_of_distinct_molecules(data) -> int:
     for replacement in replacements:
         template = medicine_molecule
         indices = [m.start() for m in re.finditer('(' + replacement[0] + ')', medicine_molecule)]
-
         length = len(replacement[0])
 
         for idx in indices:
-            template_list = list(template)
-            template_list.insert(idx + length, replacement[1])
-            for j in range(idx + length - 1, idx - 1, -1):
-                del template_list[j]
-
-            candidate = str("".join(template_list))
+            candidate = __replace(template, replacement[1], idx, length)
             result.add(candidate)
 
     return len(result)
