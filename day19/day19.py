@@ -22,6 +22,19 @@ def __replace(source, replace_string, idx, length) -> str:
     return str("".join(template_list))
 
 
+def __get_ingredient(ingredient, replacements) -> list:
+    return list(filter(lambda i: i[0] == ingredient, replacements))
+
+
+def __find_placeholders(text, ingredients) -> list:
+    result = []
+    for ingredient in ingredients:
+        indices = [m.start() for m in re.finditer('(?=' + ingredient + ')', text)]
+        for idx in indices:
+            result.append((ingredient, idx))
+    return result
+
+
 def calculate_number_of_distinct_molecules(data) -> int:
     result = set()
     replacements = __build_replacements_list(data)
@@ -39,10 +52,17 @@ def calculate_number_of_distinct_molecules(data) -> int:
     return len(result)
 
 
+def __find_fewest_steps_to_generate_medicine_molecule(data) -> int:
+    replacements = __build_replacements_list(data)
+    print(__get_ingredient("O", replacements))
+    return 0
+
+
 def main() -> int:
     with open(DATA) as f:
         data = f.read()
         print("Part 1: " + str(calculate_number_of_distinct_molecules(data)))
+        print("Part 2: " + str(__find_fewest_steps_to_generate_medicine_molecule(data)))
     return 0
 
 
