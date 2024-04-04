@@ -26,13 +26,29 @@ def __get_ingredient(ingredient, replacements) -> list:
     return list(filter(lambda i: i[0] == ingredient, replacements))
 
 
-def __find_placeholders(text, ingredients) -> list:
+def __find_placeholders(text, replacements) -> list:
     result = []
-    for ingredient in ingredients:
-        indices = [m.start() for m in re.finditer('(?=' + ingredient + ')', text)]
+    for r in replacements:
+        indices = [m.start() for m in re.finditer('(?=' + r[0] + ')', text)]
         for idx in indices:
-            result.append((ingredient, idx))
+            result.append((r[0], r[1], idx))
     return result
+
+
+def __build_medicine_molecule(medicine_molecule, replacements, curr, steps, result):
+    if curr == medicine_molecule:
+        result.append(steps)
+
+    if len(curr) > len(medicine_molecule):
+        return
+
+    if len(result) > 0 and (steps >= min(result)):
+        return
+
+    placeholders = __find_placeholders(curr, replacements)
+    for p in placeholders:
+        k, v, idx = p[0], p[1], p[2]
+        __build_medicine_molecule(medicine_molecule, replacements, __replace(curr, v, idx, len(k)), (steps + 1), result)
 
 
 def calculate_number_of_distinct_molecules(data) -> int:
@@ -54,8 +70,15 @@ def calculate_number_of_distinct_molecules(data) -> int:
 
 def __find_fewest_steps_to_generate_medicine_molecule(data) -> int:
     replacements = __build_replacements_list(data)
-    print(__get_ingredient("O", replacements))
-    return 0
+    medicine_molecule = data.splitlines()[-1]
+    result = []
+
+    start = __get_ingredient("e", replacements)
+    for s in start:
+        steps = 1
+        __build_medicine_molecule(medicine_molecule, replacements, s[1], steps, result)
+
+    return min(result)
 
 
 def main() -> int:
