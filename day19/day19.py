@@ -14,6 +14,13 @@ def __build_replacements_list(data) -> list:
     return replacements
 
 
+def __invert_replacements_list(replacements) -> list:
+    inverted = []
+    for replacement in replacements:
+        inverted.append((replacement[1], replacement[0]))
+    return inverted
+
+
 def __replace(source, replace_string, idx, length) -> str:
     template_list = list(source)
     template_list.insert(idx + length, replace_string)
@@ -22,33 +29,14 @@ def __replace(source, replace_string, idx, length) -> str:
     return str("".join(template_list))
 
 
-def __get_ingredient(ingredient, replacements) -> list:
-    return list(filter(lambda i: i[0] == ingredient, replacements))
-
-
-def __find_placeholders(text, replacements) -> list:
-    result = []
-    for r in replacements:
-        indices = [m.start() for m in re.finditer('(?=' + r[0] + ')', text)]
-        for idx in indices:
-            result.append((r[0], r[1], idx))
-    return result
-
-
-def __build_medicine_molecule(medicine_molecule, replacements, curr, steps, result):
-    if curr == medicine_molecule:
-        result.append(steps)
-
-    if len(curr) > len(medicine_molecule):
-        return
-
-    if len(result) > 0 and (steps >= min(result)):
-        return
-
-    placeholders = __find_placeholders(curr, replacements)
-    for p in placeholders:
-        k, v, idx = p[0], p[1], p[2]
-        __build_medicine_molecule(medicine_molecule, replacements, __replace(curr, v, idx, len(k)), (steps + 1), result)
+def __find_and_replace(text, key, value) -> tuple:
+    steps = 0
+    indices = [m.start() for m in re.finditer('(?=' + key + ')', text)]
+    while len(indices) != 0:
+        text = __replace(text, value, indices[0], len(key))
+        indices = [m.start() for m in re.finditer('(?=' + key + ')', text)]
+        steps += 1
+    return text, steps
 
 
 def calculate_number_of_distinct_molecules(data) -> int:
@@ -68,24 +56,24 @@ def calculate_number_of_distinct_molecules(data) -> int:
     return len(result)
 
 
-def __find_fewest_steps_to_generate_medicine_molecule(data) -> int:
-    replacements = __build_replacements_list(data)
+def find_fewest_steps_to_generate_medicine_molecule(data) -> int:
+    result = 0
+    inverted_replacements = __invert_replacements_list(__build_replacements_list(data))
     medicine_molecule = data.splitlines()[-1]
-    result = []
 
-    start = __get_ingredient("e", replacements)
-    for s in start:
-        steps = 1
-        __build_medicine_molecule(medicine_molecule, replacements, s[1], steps, result)
-
-    return min(result)
+    while True:
+        for inv in inverted_replacements:
+            medicine_molecule, steps = __find_and_replace(medicine_molecule, inv[0], inv[1])
+            result += steps
+            if medicine_molecule == "e":
+                return result
 
 
 def main() -> int:
     with open(DATA) as f:
         data = f.read()
         print("Part 1: " + str(calculate_number_of_distinct_molecules(data)))
-        print("Part 2: " + str(__find_fewest_steps_to_generate_medicine_molecule(data)))
+        print("Part 2: " + str(find_fewest_steps_to_generate_medicine_molecule(data)))
     return 0
 
 
