@@ -1,5 +1,5 @@
 import os.path
-from itertools import combinations, chain, product
+from itertools import combinations, product
 
 DATA = os.path.join(os.path.dirname(__file__), 'day21.txt')
 
