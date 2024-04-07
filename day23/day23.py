@@ -10,7 +10,8 @@ class Computer(object):
         self.program = program
         self.instruction_pointer = instruction_pointer
 
-    def __parse_instruction(self, instruction) -> tuple:
+    @staticmethod
+    def __parse_instruction(instruction) -> tuple:
         ins = instruction.replace(",", "")
         parts = ins.split(" ")
         ins_type = parts[0]
