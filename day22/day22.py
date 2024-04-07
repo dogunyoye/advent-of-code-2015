@@ -54,7 +54,10 @@ def create_spells() -> list:
     ]
 
 
-def __fight(boss, player, turn, spent, result):
+def __fight(hard_mode, boss, player, turn, spent, result):
+    if hard_mode and turn == "Player":
+        player.hp -= 1
+
     if player.hp <= 0:
         # player has lost
         return
@@ -92,7 +95,7 @@ def __fight(boss, player, turn, spent, result):
         player.hp -= (boss.damage - player.armor)
         if player.hp <= 0:
             return
-        __fight(boss, player, "Player", spent, result)
+        __fight(hard_mode, boss, player, "Player", spent, result)
     else:
         for s in spells:
             spell_name = s[0]
@@ -118,22 +121,31 @@ def __fight(boss, player, turn, spent, result):
             if new_boss.hp <= 0:
                 result.append(new_spent)
             else:
-                __fight(new_boss, new_player, "Boss", new_spent, result)
+                __fight(hard_mode, new_boss, new_player, "Boss", new_spent, result)
 
 
-def find_least_amount_of_mana_to_win(data) -> int:
+def __play_game(hard_mode, data) -> int:
     result = []
     boss = __create_boss(data)
     player = __create_player()
 
-    __fight(boss, player, "Player", 0, result)
+    __fight(hard_mode, boss, player, "Player", 0, result)
     return min(result)
+
+
+def find_least_amount_of_mana_to_win(data) -> int:
+    return __play_game(False, data)
+
+
+def find_least_amount_of_mana_to_win_on_hard_mode(data) -> int:
+    return __play_game(True, data)
 
 
 def main() -> int:
     with open(DATA) as f:
         data = f.read()
         print("Part 1: " + str(find_least_amount_of_mana_to_win(data)))
+        print("Part 2: " + str(find_least_amount_of_mana_to_win_on_hard_mode(data)))
     return 0
 
 
