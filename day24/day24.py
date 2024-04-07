@@ -1,6 +1,4 @@
 import os.path
-import time
-from itertools import combinations
 from math import prod
 
 DATA = os.path.join(os.path.dirname(__file__), 'day24.txt')
