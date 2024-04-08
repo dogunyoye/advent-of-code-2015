@@ -20,8 +20,7 @@ class Player(object):
 
     def can_cast(self) -> list:
         spells = create_spells()
-        spells = list(filter(lambda s: s[1] <= self.mana, spells))
-        spells = list(filter(lambda s: s[0] not in self.effects.keys(), spells))
+        spells = list(filter(lambda s: s[0] not in self.effects.keys() and s[1] <= self.mana, spells))
         return spells
 
 
