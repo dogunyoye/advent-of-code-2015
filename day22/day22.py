@@ -35,12 +35,10 @@ def __create_boss(data) -> Boss:
     for line in data.splitlines():
         stats.append(eval(line.split(": ")[1]))
     return Boss(stats[0], stats[1])
-    # return Boss(13, 8)
 
 
 def __create_player() -> Player:
     return Player(50, 500, 0, {})
-    # return Player(10, 250, 0, {})
 
 
 def create_spells() -> list:
